@@ -71,7 +71,7 @@ def integrate_mc(
 
     if with_transform:
         # ----------------------------------------------------------------
-        # 1) Draw U ~ U(0,1), then X = a + (b-a)*U
+        #  Draw U ~ U(0,1), then X = a + (b-a)*U
         # ----------------------------------------------------------------
         dist0_1 = cp.Uniform(0.0, 1.0)
         U = dist0_1.sample(size=n_samples, seed=seed)
@@ -80,7 +80,7 @@ def integrate_mc(
         mc_estimate = (b - a) * np.mean(fX)
 
         # ----------------------------------------------------------------
-        # 2) Compute Var[ sin(X) ] on [a,b]:
+        #  Compute Var[ sin(X) ] on [a,b]:
         #    E[ sin(X) ]   = (cos(a) - cos(b)) / (b - a)
         #    E[ sin^2(X) ] = [ (x/2 - sin(2x)/4 ) ] / (b - a)
         #    Var = E[sin^2] - (E[sin])^2
@@ -102,7 +102,7 @@ def integrate_mc(
         mc_estimate = (b - a) * np.mean(fX)
 
         # ----------------------------------------------------------------
-        # Compute Var[ sin(X) ] on [a,b] exactly (same as above)
+        # Compute Var[ sin(X) ] on [a,b] exactly
         # ----------------------------------------------------------------
         E_sin_ab = (math.cos(a) - math.cos(b)) / (b - a)
 
