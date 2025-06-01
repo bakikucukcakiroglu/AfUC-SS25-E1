@@ -13,22 +13,23 @@ Function = Callable[[float], float]
 
 
 def f(x: float) -> float:
-    # --------------------------------------------------------------------
-    # define the target function f(x)=sin(x)
+    # TODO: define the target function.
+    # ====================================================================
     return math.sin(x)
-    # --------------------------------------------------------------------
+    # ====================================================================
 
 
 def analytical_integral(a: float, b: float) -> float:
-    # --------------------------------------------------------------------
+    # TODO: compute the analytical integral of f on [a, b].
+    # ====================================================================
     # exact ∫_a^b sin(x) dx = [-cos(x)]_a^b = cos(a) - cos(b)
     return math.cos(a) - math.cos(b)
-    # --------------------------------------------------------------------
+    # ====================================================================
 
 
 def transform(samples: npt.NDArray, a: float, b: float) -> npt.NDArray:
-    # --------------------------------------------------------------------
-    # (left unchanged)
+    # TODO: implement the transformation of U from [0, 1] to [a, b].
+    # ====================================================================
     samples = np.zeros_like(samples)
     for i in range(len(samples)):
         samples[i] = a + (b - 1) * i
@@ -47,15 +48,21 @@ def integrate_mc(
     with_transform: bool = False,
     seed: int = 42,
 ) -> tuple[float, float]:
+    # TODO: compute the integral with the Monta Carlo method.
+    # Depending on 'with_transform', use the uniform distribution on [a, b]
+    # directly or transform the uniform distribution on [0, 1] to [a, b].
+    # Return the integral estimate and the corresponding RMSE.
+    # ====================================================================
+    
     # --------------------------------------------------------------------
-    # Compute ∫_a^b f(x) dx via Monte Carlo and return (estimate, RMSE).
+    # Compute ∫ f(x) dx via Monte Carlo and return (estimate, RMSE).
     #
     # - If with_transform=True: 
-    #     draw U ∼ Unif(0,1), set X = a + (b-a)*U, then
+    #     draw U ∼ U(0,1), set X = a + (b-a)*U, then
     #     Ĩ = (b - a) * mean( f(X) ), RMSE = (b-a)*sqrt(Var[ f(X) ]/N).
     #
     # - If with_transform=False:
-    #     draw X ∼ Unif(a,b) directly, then
+    #     draw X ∼ U(a,b) directly, then
     #     Ĩ = (b - a) * mean( f(X) ), RMSE = (b-a)*sqrt(Var[ f(X) ]/N).
     # --------------------------------------------------------------------
     mc_estimate = 0.0
@@ -64,7 +71,7 @@ def integrate_mc(
 
     if with_transform:
         # ----------------------------------------------------------------
-        # 1) Draw U ~ Unif(0,1), then X = a + (b-a)*U
+        # 1) Draw U ~ U(0,1), then X = a + (b-a)*U
         # ----------------------------------------------------------------
         dist0_1 = cp.Uniform(0.0, 1.0)
         U = dist0_1.sample(size=n_samples, seed=seed)
@@ -75,7 +82,7 @@ def integrate_mc(
         # ----------------------------------------------------------------
         # 2) Compute Var[ sin(X) ] on [a,b]:
         #    E[ sin(X) ]   = (cos(a) - cos(b)) / (b - a)
-        #    E[ sin^2(X) ] = [ (x/2 - sin(2x)/4 ) ]_a^b / (b - a)
+        #    E[ sin^2(X) ] = [ (x/2 - sin(2x)/4 ) ] / (b - a)
         #    Var = E[sin^2] - (E[sin])^2
         # ----------------------------------------------------------------
         E_sin_ab = (math.cos(a) - math.cos(b)) / (b - a)
@@ -113,19 +120,19 @@ if __name__ == "__main__":
     # ------------------------
     # Choose parameters:
     # ------------------------
-    N_list = [10, 100, 1000, 10000]
+    N_list = [10, 100, 1000, 10000, 100000, 1000000, 10000000]
 
-    # ── For Assignment 2.1: integrate on [0,1] without transform ──
+    # For Assignment 2.1: integrate on [0,1] without transform
+    # a = 0.0
+    # b = 1.0
+    # with_transform = False
+    # seed = 65
+
+    #  For Assignment 2.2: integrate on [2,4] with transform 
     a = 2.0
     b = 4.0
     with_transform = True
     seed = 65
-
-    # ── For Assignment 2.2: integrate on [2,4] with transform ──
-    # a = 2.0
-    # b = 4.0
-    # with_transform = True
-    # seed = 65
 
     # ------------------------
     # Compute MC estimates and errors:
